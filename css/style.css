@@ -8,6 +8,26 @@
 a {
   text-decoration: none;
 }
+/*This class is needed to hide elements (by adding this class)*/
+.hidden-element {
+  display: none !important;
+}
+/* This class is needed to make elements appear (by adding this class)*/
+.appeared-block {
+  display: block !important;
+}
+.fade-animation {
+  animation-name: fade;
+  animation-duration: 0.7s;
+}
+@keyframes fade {
+  from {
+    opacity: 0.1;
+  }
+  to {
+    opacity: 1;
+  }
+}
 .btn {
   width: 220px;
   height: 65px;
