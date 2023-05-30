@@ -83,19 +83,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const hoursBlock = timer.querySelector("#hours");
     const minsBlock = timer.querySelector("#minutes");
     const secsBlock = timer.querySelector("#seconds");
+
     updateTimer();
     const timerUpdater = setInterval(updateTimer, 1000);
 
     function updateTimer() {
       const remainTimeObj = calcRemainingTime(deadline);
 
-      daysBlock.textContent = addNeededZero(remainTimeObj.remainDays);
-      hoursBlock.textContent = addNeededZero(remainTimeObj.remainHours);
-      minsBlock.textContent = addNeededZero(remainTimeObj.remainMins);
-      secsBlock.textContent = addNeededZero(remainTimeObj.remainSecs);
-
-      if (remainTimeObj.totalMilSecs <= 0) {
+      if (remainTimeObj.totalMilSecs > 0) {
+        daysBlock.textContent = addNeededZero(remainTimeObj.remainDays);
+        hoursBlock.textContent = addNeededZero(remainTimeObj.remainHours);
+        minsBlock.textContent = addNeededZero(remainTimeObj.remainMins);
+        secsBlock.textContent = addNeededZero(remainTimeObj.remainSecs);
+      } else {
         clearInterval(timerUpdater);
+        labelWithTargetDate.textContent = `Акция закончилась!!!`;
+        daysBlock.textContent = "--";
+        hoursBlock.textContent = "--";
+        minsBlock.textContent = "--";
+        secsBlock.textContent = "--";
       }
     }
   }
