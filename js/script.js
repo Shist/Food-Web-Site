@@ -41,17 +41,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const targetFullDate = new Date(); // Today's date (this variable will be changed)
   targetFullDate.setDate(targetFullDate.getDate() + 5); // Today's date + 5 days
-  targetFullDate.setHours(0, 0, 0, 0); // Today's date + 5 days, but with zero hours, minutes, seconds and milliseconds
-  const targetDateArr = targetFullDate.toLocaleDateString().split(".");
-  const targetDay = targetDateArr[0];
-  const targetMonth = targetDateArr[1];
-  const targetYear = targetDateArr[2];
-  const targetTimeArr = targetFullDate.toLocaleTimeString().split(":");
-  const targetHours = targetTimeArr[0];
-  const targetMins = targetTimeArr[1];
+  targetFullDate.setUTCHours(0, 0, 0, 0); // Today's date + 5 days, but with zero hours, minutes, seconds and milliseconds (UTC)
+  const localTargetDateArr = targetFullDate.toLocaleDateString().split(".");
+  const localTargetDay = localTargetDateArr[0];
+  const localTargetMonth = localTargetDateArr[1];
+  const localTargetYear = localTargetDateArr[2];
+  const localTargetTimeArr = targetFullDate.toLocaleTimeString().split(":");
+  const localTargetHours = localTargetTimeArr[0];
+  const localTargetMins = localTargetTimeArr[1];
 
   const labelWithTargetDate = document.querySelector(".promotion__target-date");
-  labelWithTargetDate.textContent = `Акция закончится: ${targetDay}.${targetMonth}.${targetYear}, в ${targetHours}:${targetMins}`;
+  labelWithTargetDate.textContent = `Акция закончится: ${localTargetDay}.${localTargetMonth}.${localTargetYear}, в ${localTargetHours}:${localTargetMins}`;
 
   function calcRemainingTime(deadline) {
     const totalMilSecs = deadline.getTime() - Date.parse(new Date());
