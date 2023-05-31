@@ -119,12 +119,14 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", () => {
       modalWindow.classList.remove("hidden-element");
       modalWindow.classList.add("appeared-block");
+      document.body.style.overflow = "hidden";
     });
   });
   btnsCloseModalWindow.forEach((btn) => {
     btn.addEventListener("click", () => {
       modalWindow.classList.remove("appeared-block");
       modalWindow.classList.add("hidden-element");
+      document.body.style.overflow = "";
     });
   });
 });
