@@ -122,11 +122,17 @@ document.addEventListener("DOMContentLoaded", () => {
       document.body.style.overflow = "hidden";
     });
   });
+  function hideModalWindow() {
+    modalWindow.classList.remove("appeared-block");
+    modalWindow.classList.add("hidden-element");
+    document.body.style.overflow = "";
+  }
   btnsCloseModalWindow.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      modalWindow.classList.remove("appeared-block");
-      modalWindow.classList.add("hidden-element");
-      document.body.style.overflow = "";
-    });
+    btn.addEventListener("click", hideModalWindow);
+  });
+  modalWindow.addEventListener("click", (event) => {
+    if (event.target === modalWindow) {
+      hideModalWindow();
+    }
   });
 });
