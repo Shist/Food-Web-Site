@@ -135,4 +135,12 @@ document.addEventListener("DOMContentLoaded", () => {
       hideModalWindow();
     }
   });
+  document.addEventListener("keydown", (event) => {
+    if (
+      event.code === "Escape" &&
+      modalWindow.classList.contains("appeared-block")
+    ) {
+      hideModalWindow();
+    }
+  });
 });
