@@ -107,4 +107,24 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   showTimerOnPage(".timer", targetFullDate);
+
+  // Modal Window
+
+  const modalWindow = document.querySelector(".modal");
+  const btnsOpenModalWindow = document.querySelectorAll("[data-modal-window]");
+  const btnsCloseModalWindow = document.querySelectorAll(
+    "[data-close-modal-window]"
+  );
+  btnsOpenModalWindow.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      modalWindow.classList.remove("hidden-element");
+      modalWindow.classList.add("appeared-block");
+    });
+  });
+  btnsCloseModalWindow.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      modalWindow.classList.remove("appeared-block");
+      modalWindow.classList.add("hidden-element");
+    });
+  });
 });
