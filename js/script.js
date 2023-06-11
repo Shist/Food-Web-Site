@@ -160,7 +160,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // Использование классов для карточек
 
   class FoodMenuCard {
-    constructor(headline, description, price, imgSrc, imgAlt, parentSelector) {
+    constructor(
+      headline,
+      description,
+      price,
+      imgSrc,
+      imgAlt,
+      parentSelector,
+      ...classes
+    ) {
       this.headline = headline;
       this.description = description;
       this.price = price;
@@ -169,6 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
       this.imgSrc = imgSrc;
       this.imgAlt = imgAlt;
       this.parent = document.querySelector(parentSelector);
+      this.classes = classes;
     }
 
     changeToUAH() {
@@ -176,23 +185,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     render() {
-      this.parent.insertAdjacentHTML(
-        "beforeend",
-        `
-        <div class="menu__item">
-          <img src=${this.imgSrc} alt=${this.imgAlt} />
-          <h3 class="menu__item-subtitle">${this.headline}</h3>
-          <div class="menu__item-descr">
-            ${this.description}
-          </div>
-          <div class="menu__item-divider"></div>
-          <div class="menu__item-price">
-            <div class="menu__item-cost">Цена:</div>
-            <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
-          </div>
+      const newFoodMenuCard = document.createElement("div");
+      if (this.classes.length) {
+        this.classes.forEach((oneMoreClass) => {
+          newFoodMenuCard.classList.add(oneMoreClass);
+        });
+      } else {
+        this.element = "menu__item";
+        newFoodMenuCard.classList.add(this.element);
+      }
+      newFoodMenuCard.innerHTML = `
+        <img src=${this.imgSrc} alt=${this.imgAlt} />
+        <h3 class="menu__item-subtitle">${this.headline}</h3>
+        <div class="menu__item-descr">
+          ${this.description}
         </div>
-      `
-      );
+        <div class="menu__item-divider"></div>
+        <div class="menu__item-price">
+          <div class="menu__item-cost">Цена:</div>
+          <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
+        </div>
+      `;
+      this.parent.append(newFoodMenuCard);
     }
   }
 
