@@ -272,34 +272,24 @@ document.addEventListener("DOMContentLoaded", () => {
       imgLoading.classList.add("img-spinner");
       form.insertAdjacentElement("afterend", imgLoading);
 
-      const request = new XMLHttpRequest();
-
-      request.addEventListener("load", () => {
-        if (request.status === 200) {
-          console.log(`Data from server:\n${request.response}`);
-          showThankfulModal(messageForUser.success);
-          form.reset();
-          imgLoading.remove();
-        } else {
-          showThankfulModal(
-            `${messageForUser.failure} Код ошибки: ${request.status}`
-          );
-        }
-      });
-
-      request.open("POST", "server.php");
-
-      request.setRequestHeader("Content-type", "application/json");
-
       const formData = new FormData(form);
 
-      const dataObj = {};
-
-      formData.forEach((value, key) => {
-        dataObj[key] = value;
-      });
-
-      request.send(JSON.stringify(dataObj));
+      fetch("server.php", {
+        method: "POST",
+        body: formData,
+      })
+        .then((data) => data.text())
+        .then((data) => {
+          console.log(`Data from server:\n${data}`);
+          showThankfulModal(messageForUser.success);
+        })
+        .catch((data) => {
+          showThankfulModal(`${messageForUser.failure} Код ошибки: ${data}`);
+        })
+        .finally(() => {
+          form.reset();
+          imgLoading.remove();
+        });
     });
   }
 
