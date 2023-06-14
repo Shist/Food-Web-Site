@@ -20,6 +20,10 @@ a {
   animation-name: fade;
   animation-duration: 0.7s;
 }
+.img-spinner {
+  display: block;
+  margin: 0 auto;
+}
 @keyframes fade {
   from {
     opacity: 0.1;

@@ -112,10 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const modalWindow = document.querySelector(".modal");
   const btnsOpenModalWindow = document.querySelectorAll("[data-modal-window]");
-  const btnsCloseModalWindow = document.querySelectorAll(
-    "[data-close-modal-window]"
-  );
-  const timerBeforeModal = setTimeout(openModalWindow, 5000);
+  const timerBeforeModal = setTimeout(openModalWindow, 10000);
   function openModalWindow() {
     modalWindow.classList.remove("hidden-element");
     modalWindow.classList.add("appeared-block");
@@ -123,10 +120,13 @@ document.addEventListener("DOMContentLoaded", () => {
     clearTimeout(timerBeforeModal);
     document.removeEventListener("scroll", openModalWindowByScroll);
   }
+  let hideModalWindowTimeoutID = null;
   function hideModalWindow() {
+    clearTimeout(hideModalWindowTimeoutID);
     modalWindow.classList.remove("appeared-block");
     modalWindow.classList.add("hidden-element");
     document.body.style.overflow = "";
+    setModalWindowToDefault();
   }
   function openModalWindowByScroll() {
     if (
@@ -136,14 +136,23 @@ document.addEventListener("DOMContentLoaded", () => {
       openModalWindow();
     }
   }
+  function setModalWindowToDefault() {
+    const thankfulDialog = document.querySelector(".modal__dialog_thankful");
+    thankfulDialog?.remove();
+    const mainDialog = document.querySelector(".modal__dialog");
+    mainDialog.classList.remove("hidden-element");
+    mainDialog.classList.add("appeared-block");
+    const inputs = document.querySelectorAll(".modal__input");
+    inputs.forEach((input) => (input.value = ""));
+  }
   btnsOpenModalWindow.forEach((btn) => {
     btn.addEventListener("click", openModalWindow);
   });
-  btnsCloseModalWindow.forEach((btn) => {
-    btn.addEventListener("click", hideModalWindow);
-  });
   modalWindow.addEventListener("click", (event) => {
-    if (event.target === modalWindow) {
+    if (
+      event.target === modalWindow ||
+      event.target.getAttribute("data-close-modal-window") == ""
+    ) {
       hideModalWindow();
     }
   });
@@ -157,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   document.addEventListener("scroll", openModalWindowByScroll);
 
-  // Использование классов для карточек
+  // Using classes for cards
 
   class FoodMenuCard {
     constructor(
@@ -241,56 +250,79 @@ document.addEventListener("DOMContentLoaded", () => {
     "post",
     ".menu__field .container"
   ).render();
+
+  // Posting user data to server with Forms
+
+  const messageForUser = {
+    loadingImg: "img/form/spinner.svg",
+    success: "Мы успешно получили Ваши данные, мы скоро свяжемся с Вами!",
+    failure: "Что-то пошло не так.",
+  };
+
+  const forms = document.querySelectorAll("form");
+
+  forms.forEach((item) => postData(item));
+
+  function postData(form) {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const imgLoading = document.createElement("img");
+      imgLoading.src = messageForUser.loadingImg;
+      imgLoading.classList.add("img-spinner");
+      form.insertAdjacentElement("afterend", imgLoading);
+
+      const request = new XMLHttpRequest();
+
+      request.addEventListener("load", () => {
+        if (request.status === 200) {
+          console.log(`Data from server:\n${request.response}`);
+          showThankfulModal(messageForUser.success);
+          form.reset();
+          imgLoading.remove();
+        } else {
+          showThankfulModal(
+            `${messageForUser.failure} Код ошибки: ${request.status}`
+          );
+        }
+      });
+
+      request.open("POST", "server.php");
+
+      request.setRequestHeader("Content-type", "application/json");
+
+      const formData = new FormData(form);
+
+      const dataObj = {};
+
+      formData.forEach((value, key) => {
+        dataObj[key] = value;
+      });
+
+      request.send(JSON.stringify(dataObj));
+    });
+  }
+
+  // Creating thankful window for user after he sends his data inside form
+
+  function showThankfulModal(message) {
+    const mainDialog = document.querySelector(".modal__dialog");
+    mainDialog.classList.remove("appeared-block");
+    mainDialog.classList.add("hidden-element");
+
+    const thankfulDialog = document.createElement("div");
+    thankfulDialog.classList.add("modal__dialog", "modal__dialog_thankful");
+    thankfulDialog.innerHTML = `
+      <div class="modal__content">
+        <div class="modal__close" data-close-modal-window>&times;</div>
+        <div class="modal__title">${message}</div>
+      </div>
+    `;
+
+    document.querySelector(".modal").append(thankfulDialog);
+
+    openModalWindow();
+
+    hideModalWindowTimeoutID = setTimeout(hideModalWindow, 5000);
+  }
 });
-
-// Posting user data to server with Forms
-
-const messageForUser = {
-  loading: "Отправка данных на сервер...",
-  success: "Мы успешно получили Ваши данные, мы скоро свяжемся с Вами!",
-  failure: "Что-то пошло не так.",
-};
-
-const forms = document.querySelectorAll("form");
-
-forms.forEach((item) => postData(item));
-
-function postData(form) {
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-
-    const divStatusMsg = document.createElement("div");
-    divStatusMsg.classList.add("status"); // We don't have this class, but we should mark that div
-    divStatusMsg.textContent = messageForUser.loading;
-    form.append(divStatusMsg);
-
-    const request = new XMLHttpRequest();
-
-    request.addEventListener("load", () => {
-      if (request.status === 200) {
-        console.log(`Data from server:\n${request.response}`);
-        divStatusMsg.textContent = messageForUser.success;
-        form.reset();
-        setTimeout(() => {
-          divStatusMsg.remove();
-        }, 3000);
-      } else {
-        divStatusMsg.textContent = `${messageForUser.failure} Код ошибки: ${request.status}`;
-      }
-    });
-
-    request.open("POST", "server.php");
-
-    request.setRequestHeader("Content-type", "application/json");
-
-    const formData = new FormData(form);
-
-    const dataObj = {};
-
-    formData.forEach((value, key) => {
-      dataObj[key] = value;
-    });
-
-    request.send(JSON.stringify(dataObj));
-  });
-}
