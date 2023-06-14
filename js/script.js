@@ -242,3 +242,50 @@ document.addEventListener("DOMContentLoaded", () => {
     ".menu__field .container"
   ).render();
 });
+
+// Posting user data to server with Forms
+
+const messageForUser = {
+  loading: "Отправка данных на сервер...",
+  success: "Мы успешно получили Ваши данные, мы скоро свяжемся с Вами!",
+  failure: "Что-то пошло не так.",
+};
+
+const forms = document.querySelectorAll("form");
+
+forms.forEach((item) => postData(item));
+
+function postData(form) {
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const divStatusMsg = document.createElement("div");
+    divStatusMsg.classList.add("status"); // We don't have this class, but we should mark that div
+    divStatusMsg.textContent = messageForUser.loading;
+    form.append(divStatusMsg);
+
+    const request = new XMLHttpRequest();
+
+    request.addEventListener("load", () => {
+      if (request.status === 200) {
+        console.log(`Data from server:\n${request.response}`);
+        divStatusMsg.textContent = messageForUser.success;
+        form.reset();
+        setTimeout(() => {
+          divStatusMsg.remove();
+        }, 3000);
+      } else {
+        divStatusMsg.textContent = `${messageForUser.failure} Код ошибки: ${request.status}`;
+      }
+    });
+
+    request.open("POST", "server.php");
+
+    // If we use XMLHttpRequest and FormData() then we DON'T NEED to set headers (or we will get empty data on server)
+    // request.setRequestHeader("Content-type", "multipart/form-data");
+
+    const formData = new FormData(form);
+
+    request.send(formData);
+  });
+}
