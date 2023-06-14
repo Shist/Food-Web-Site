@@ -281,11 +281,16 @@ function postData(form) {
 
     request.open("POST", "server.php");
 
-    // If we use XMLHttpRequest and FormData() then we DON'T NEED to set headers (or we will get empty data on server)
-    // request.setRequestHeader("Content-type", "multipart/form-data");
+    request.setRequestHeader("Content-type", "application/json");
 
     const formData = new FormData(form);
 
-    request.send(formData);
+    const dataObj = {};
+
+    formData.forEach((value, key) => {
+      dataObj[key] = value;
+    });
+
+    request.send(JSON.stringify(dataObj));
   });
 }
