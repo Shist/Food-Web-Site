@@ -261,9 +261,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const forms = document.querySelectorAll("form");
 
-  forms.forEach((item) => postData(item));
+  forms.forEach((item) => bindPostData(item));
 
-  function postData(form) {
+  const postData = async (url, data) => {
+    const result = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: data,
+    });
+
+    return await result.json(); // Извлекаем из HTTP-ответа данные (которые в виде json формата) и возвращаем их в виде js-объекта
+  };
+
+  function bindPostData(form) {
     form.addEventListener("submit", (event) => {
       event.preventDefault();
 
@@ -273,21 +285,12 @@ document.addEventListener("DOMContentLoaded", () => {
       form.insertAdjacentElement("afterend", imgLoading);
 
       const formData = new FormData(form);
-      const dataObj = {};
-      formData.forEach((value, key) => {
-        dataObj[key] = value;
-      });
 
-      fetch("server.php", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify(dataObj),
-      })
-        .then((data) => data.text())
+      const dataInJson = JSON.stringify(Object.fromEntries(formData.entries()));
+
+      postData("http://localhost:3000/requests", dataInJson)
         .then((data) => {
-          console.log(`Data from server:\n${data}`);
+          console.log(data);
           showThankfulModal(messageForUser.success);
         })
         .catch((data) => {
