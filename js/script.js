@@ -273,10 +273,17 @@ document.addEventListener("DOMContentLoaded", () => {
       form.insertAdjacentElement("afterend", imgLoading);
 
       const formData = new FormData(form);
+      const dataObj = {};
+      formData.forEach((value, key) => {
+        dataObj[key] = value;
+      });
 
       fetch("server.php", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(dataObj),
       })
         .then((data) => data.text())
         .then((data) => {
@@ -284,7 +291,9 @@ document.addEventListener("DOMContentLoaded", () => {
           showThankfulModal(messageForUser.success);
         })
         .catch((data) => {
-          showThankfulModal(`${messageForUser.failure} Код ошибки: ${data}`);
+          showThankfulModal(
+            `${messageForUser.failure} Информация об ошибке: ${data}`
+          );
         })
         .finally(() => {
           form.reset();
