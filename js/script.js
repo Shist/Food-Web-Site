@@ -341,47 +341,80 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Slider with food images
 
-  const currSliderId = document.querySelector("#current");
-  const maxSliderId = document.querySelector("#total");
+  const slides = document.querySelectorAll(".offer__slide");
   const btnSliderPrev = document.querySelector(".offer__slider-prev");
   const btnSliderNext = document.querySelector(".offer__slider-next");
-  const slides = document.querySelectorAll(".offer__slide");
-  const wholeSlidersCount = slides.length;
-  let currSlideNum = +currSliderId.textContent;
+  const maxSlideNumLabel = document.querySelector("#total");
+  const currSlideNumLabel = document.querySelector("#current");
+  const wholeSlidesCount = slides.length;
+  let currSlideNum = +currSlideNumLabel.textContent;
+  let slideOffset = 0;
 
-  showCurrSlide(currSlideNum);
-
-  if (wholeSlidersCount < 10) {
-    maxSliderId.textContent = `0${wholeSlidersCount}`;
+  if (wholeSlidesCount < 10) {
+    maxSlideNumLabel.textContent = `0${wholeSlidesCount}`;
+    currSlideNumLabel.textContent = `0${currSlideNum}`;
   } else {
-    maxSliderId.textContent = wholeSlidersCount;
+    maxSlideNumLabel.textContent = wholeSlidesCount;
+    currSlideNumLabel.textContent = currSlideNum;
   }
 
-  function showCurrSlide(slideNum) {
-    if (slideNum < 1) {
-      currSlideNum = wholeSlidersCount;
-    }
-    if (slideNum > wholeSlidersCount) {
-      currSlideNum = 1;
-    }
-    slides.forEach((slider) => hideElementBlock(slider));
-    showElementBlock(slides[currSlideNum - 1]);
+  const slidesWrapper = document.querySelector(".offer__slider-wrapper");
+  const slidesWrapperWidth = window.getComputedStyle(slidesWrapper).width;
+
+  const slidesField = document.querySelector(".offer__slider-inner");
+  slidesField.style.width = 100 * wholeSlidesCount + "%";
+
+  slides.forEach((slide) => {
+    slide.style.width = slidesWrapperWidth;
+  });
+
+  function updateCurrSlideNum(currSlideNumLabel, currSlideNum) {
     if (currSlideNum < 10) {
-      currSliderId.textContent = `0${currSlideNum}`;
+      currSlideNumLabel.textContent = `0${currSlideNum}`;
     } else {
-      currSliderId.textContent = currSlideNum;
+      currSlideNumLabel.textContent = currSlideNum;
     }
-  }
-
-  function plusSlides(slidesAmount) {
-    showCurrSlide((currSlideNum += slidesAmount));
   }
 
   btnSliderPrev.addEventListener("click", () => {
-    plusSlides(-1);
+    const sliderWidthNum = +slidesWrapperWidth.slice(
+      0,
+      slidesWrapperWidth.length - 2
+    );
+    if (!slideOffset) {
+      slideOffset = sliderWidthNum * (wholeSlidesCount - 1);
+    } else {
+      slideOffset -= sliderWidthNum;
+    }
+    slidesField.style.transform = `translateX(-${slideOffset}px)`;
+
+    if (currSlideNum === 1) {
+      currSlideNum = wholeSlidesCount;
+    } else {
+      currSlideNum--;
+    }
+    updateCurrSlideNum(currSlideNumLabel, currSlideNum);
   });
 
   btnSliderNext.addEventListener("click", () => {
-    plusSlides(1);
+    const sliderWidthNum = +slidesWrapperWidth.slice(
+      0,
+      slidesWrapperWidth.length - 2
+    );
+    if (slideOffset === sliderWidthNum * (wholeSlidesCount - 1)) {
+      slideOffset = 0;
+    } else {
+      slideOffset += sliderWidthNum;
+    }
+    slidesField.style.transform = `translateX(-${slideOffset}px)`;
+
+    if (currSlideNum === wholeSlidesCount) {
+      currSlideNum = 1;
+    } else {
+      currSlideNum++;
+    }
+    updateCurrSlideNum(currSlideNumLabel, currSlideNum);
   });
+
+  showCurrSlide(currSlideNum);
 });
