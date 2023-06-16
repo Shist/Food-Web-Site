@@ -1,14 +1,24 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
+  function showElementBlock(domElement) {
+    domElement.classList.remove("hidden-element");
+    domElement.classList.add("appeared-block");
+  }
+
+  function hideElementBlock(domElement) {
+    domElement.classList.remove("appeared-block");
+    domElement.classList.add("hidden-element");
+  }
+
   const tabContentBlocks = document.querySelectorAll(".tabcontent");
   const tabContainer = document.querySelector(".tabheader__items");
   const tabs = document.querySelectorAll(".tabheader__item");
 
   function hideAllTabContent() {
     tabContentBlocks.forEach((contentBlock) => {
-      contentBlock.classList.remove("appeared-block", "fade-animation");
-      contentBlock.classList.add("hidden-element");
+      contentBlock.classList.remove("fade-animation");
+      hideElementBlock(contentBlock);
     });
     tabs.forEach((tab) => {
       tab.classList.remove("tabheader__item_active");
@@ -16,8 +26,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showTabContentById(id = 0) {
-    tabContentBlocks[id].classList.remove("hidden-element");
-    tabContentBlocks[id].classList.add("appeared-block", "fade-animation");
+    showElementBlock(tabContentBlocks[id]);
+    tabContentBlocks[id].classList.add("fade-animation");
     tabs[id].classList.add("tabheader__item_active");
   }
 
@@ -114,8 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnsOpenModalWindow = document.querySelectorAll("[data-modal-window]");
   const timerBeforeModal = setTimeout(openModalWindow, 10000);
   function openModalWindow() {
-    modalWindow.classList.remove("hidden-element");
-    modalWindow.classList.add("appeared-block");
+    showElementBlock(modalWindow);
     document.body.style.overflow = "hidden";
     clearTimeout(timerBeforeModal);
     document.removeEventListener("scroll", openModalWindowByScroll);
@@ -123,8 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let hideModalWindowTimeoutID = null;
   function hideModalWindow() {
     clearTimeout(hideModalWindowTimeoutID);
-    modalWindow.classList.remove("appeared-block");
-    modalWindow.classList.add("hidden-element");
+    hideElementBlock(modalWindow);
     document.body.style.overflow = "";
     setModalWindowToDefault();
   }
@@ -140,8 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const thankfulDialog = document.querySelector(".modal__dialog_thankful");
     thankfulDialog?.remove();
     const mainDialog = document.querySelector(".modal__dialog");
-    mainDialog.classList.remove("hidden-element");
-    mainDialog.classList.add("appeared-block");
+    showElementBlock(mainDialog);
     const inputs = document.querySelectorAll(".modal__input");
     inputs.forEach((input) => (input.value = ""));
   }
@@ -310,8 +317,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function showThankfulModal(message) {
     const mainDialog = document.querySelector(".modal__dialog");
-    mainDialog.classList.remove("appeared-block");
-    mainDialog.classList.add("hidden-element");
+    hideElementBlock(mainDialog);
 
     const thankfulDialog = document.createElement("div");
     thankfulDialog.classList.add("modal__dialog", "modal__dialog_thankful");
@@ -332,4 +338,50 @@ document.addEventListener("DOMContentLoaded", () => {
   fetch("http://localhost:3000/menu")
     .then((data) => data.json())
     .then((result) => console.log(result));
+
+  // Slider with food images
+
+  const currSliderId = document.querySelector("#current");
+  const maxSliderId = document.querySelector("#total");
+  const btnSliderPrev = document.querySelector(".offer__slider-prev");
+  const btnSliderNext = document.querySelector(".offer__slider-next");
+  const slides = document.querySelectorAll(".offer__slide");
+  const wholeSlidersCount = slides.length;
+  let currSlideNum = +currSliderId.textContent;
+
+  showCurrSlide(currSlideNum);
+
+  if (wholeSlidersCount < 10) {
+    maxSliderId.textContent = `0${wholeSlidersCount}`;
+  } else {
+    maxSliderId.textContent = wholeSlidersCount;
+  }
+
+  function showCurrSlide(slideNum) {
+    if (slideNum < 1) {
+      currSlideNum = wholeSlidersCount;
+    }
+    if (slideNum > wholeSlidersCount) {
+      currSlideNum = 1;
+    }
+    slides.forEach((slider) => hideElementBlock(slider));
+    showElementBlock(slides[currSlideNum - 1]);
+    if (currSlideNum < 10) {
+      currSliderId.textContent = `0${currSlideNum}`;
+    } else {
+      currSliderId.textContent = currSlideNum;
+    }
+  }
+
+  function plusSlides(slidesAmount) {
+    showCurrSlide((currSlideNum += slidesAmount));
+  }
+
+  btnSliderPrev.addEventListener("click", () => {
+    plusSlides(-1);
+  });
+
+  btnSliderNext.addEventListener("click", () => {
+    plusSlides(1);
+  });
 });
