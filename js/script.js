@@ -342,6 +342,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Slider with food images
 
   const slides = document.querySelectorAll(".offer__slide");
+  const sliderWrapper = document.querySelector(".offer__slider");
   const btnSliderPrev = document.querySelector(".offer__slider-prev");
   const btnSliderNext = document.querySelector(".offer__slider-next");
   const maxSlideNumLabel = document.querySelector("#total");
@@ -360,6 +361,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const slidesWrapper = document.querySelector(".offer__slider-wrapper");
   const slidesWrapperWidth = window.getComputedStyle(slidesWrapper).width;
+  const sliderWidthNum = +slidesWrapperWidth.slice(
+    0,
+    slidesWrapperWidth.length - 2
+  );
 
   const slidesField = document.querySelector(".offer__slider-inner");
   slidesField.style.width = 100 * wholeSlidesCount + "%";
@@ -368,7 +373,24 @@ document.addEventListener("DOMContentLoaded", () => {
     slide.style.width = slidesWrapperWidth;
   });
 
-  function updateCurrSlideNum(currSlideNumLabel, currSlideNum) {
+  sliderWrapper.style.position = "relative";
+  const dotsWrapper = document.createElement("ol");
+  const dotsArr = [];
+  dotsWrapper.classList.add("carousel-indicators");
+  slidesWrapper.append(dotsWrapper);
+
+  for (let i = 0; i < slides.length; i++) {
+    const nextDot = document.createElement("li");
+    nextDot.setAttribute("data-slide-to", i + 1);
+    nextDot.classList.add("dot");
+    if (i === 0) {
+      nextDot.style.opacity = 1;
+    }
+    dotsWrapper.append(nextDot);
+    dotsArr.push(nextDot);
+  }
+
+  function updateCurrSlideNumLabel(currSlideNum) {
     if (currSlideNum < 10) {
       currSlideNumLabel.textContent = `0${currSlideNum}`;
     } else {
@@ -376,11 +398,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function makeCurrDotActive(currSlideNum) {
+    dotsArr.forEach((dot) => (dot.style.opacity = ".5"));
+    dotsArr[currSlideNum - 1].style.opacity = 1;
+  }
+
   btnSliderPrev.addEventListener("click", () => {
-    const sliderWidthNum = +slidesWrapperWidth.slice(
-      0,
-      slidesWrapperWidth.length - 2
-    );
     if (!slideOffset) {
       slideOffset = sliderWidthNum * (wholeSlidesCount - 1);
     } else {
@@ -393,14 +416,12 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       currSlideNum--;
     }
-    updateCurrSlideNum(currSlideNumLabel, currSlideNum);
+
+    updateCurrSlideNumLabel(currSlideNum);
+    makeCurrDotActive(currSlideNum);
   });
 
   btnSliderNext.addEventListener("click", () => {
-    const sliderWidthNum = +slidesWrapperWidth.slice(
-      0,
-      slidesWrapperWidth.length - 2
-    );
     if (slideOffset === sliderWidthNum * (wholeSlidesCount - 1)) {
       slideOffset = 0;
     } else {
@@ -413,8 +434,22 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       currSlideNum++;
     }
-    updateCurrSlideNum(currSlideNumLabel, currSlideNum);
+
+    updateCurrSlideNumLabel(currSlideNum);
+    makeCurrDotActive(currSlideNum);
   });
 
-  showCurrSlide(currSlideNum);
+  dotsWrapper.addEventListener("click", (event) => {
+    if (event.target.classList.contains("dot")) {
+      const slideTo = event.target.getAttribute("data-slide-to");
+
+      currSlideNum = +slideTo;
+
+      slideOffset = sliderWidthNum * (slideTo - 1);
+      slidesField.style.transform = `translateX(-${slideOffset}px)`;
+
+      updateCurrSlideNumLabel(currSlideNum);
+      makeCurrDotActive(currSlideNum);
+    }
+  });
 });
