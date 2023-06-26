@@ -361,10 +361,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const slidesWrapper = document.querySelector(".offer__slider-wrapper");
   const slidesWrapperWidth = window.getComputedStyle(slidesWrapper).width;
-  const sliderWidthNum = +slidesWrapperWidth.slice(
-    0,
-    slidesWrapperWidth.length - 2
-  );
+  const sliderWidthNum = +slidesWrapperWidth.replace(/[^\d\.]/g, ""); // [^\d\.] - Any symbol except digits and "."
 
   const slidesField = document.querySelector(".offer__slider-inner");
   slidesField.style.width = 100 * wholeSlidesCount + "%";
