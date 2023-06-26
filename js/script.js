@@ -453,16 +453,48 @@ document.addEventListener("DOMContentLoaded", () => {
   // Calculator
 
   const result = document.querySelector(".calculating__result span");
-  let gender = "female"; // By default
+  let gender;
   let height;
   let weight;
   let age;
-  let ratio = 1.375; // By default
+  let ratio;
+
+  if (localStorage.getItem("gender")) {
+    gender = localStorage.getItem("gender");
+  } else {
+    gender = "female"; // By default
+    localStorage.setItem("gender", gender);
+  }
+
+  if (localStorage.getItem("ratio")) {
+    ratio = localStorage.getItem("ratio");
+  } else {
+    ratio = 1.375; // By default
+    localStorage.setItem("ratio", ratio);
+  }
+
+  function initLocalSettings(selector, activeClass) {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach((element) => {
+      element.classList.remove(activeClass);
+      if (element.getAttribute("id") === localStorage.getItem("gender")) {
+        element.classList.add(activeClass);
+      }
+      if (
+        element.getAttribute("data-ratio") === localStorage.getItem("ratio")
+      ) {
+        element.classList.add(activeClass);
+      }
+    });
+  }
+
+  initLocalSettings("#gender div", "calculating__choose-item_active");
+  initLocalSettings(
+    ".calculating__choose_big div",
+    "calculating__choose-item_active"
+  );
 
   function calcTotal() {
-    console.log(
-      `gender=${gender}, height=${height}, weight=${weight}, age=${age}, ratio=${ratio}`
-    );
     if (gender && height && weight && age && ratio) {
       if (gender === "female") {
         result.textContent = Math.round(
@@ -482,16 +514,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   calcTotal(); // Initial calculation
 
-  function getStaticInfo(parentSelector, activeClass) {
-    const elements = document.querySelectorAll(`${parentSelector} div`);
+  function getStaticInfo(selector, activeClass) {
+    const elements = document.querySelectorAll(selector);
 
     elements.forEach((element) => {
       element.addEventListener("click", (event) => {
-        console.log(`event.target = ${event.target}`);
         if (event.target.getAttribute("data-ratio")) {
           ratio = event.target.getAttribute("data-ratio");
+          localStorage.setItem("ratio", ratio);
         } else {
           gender = event.target.getAttribute("id");
+          localStorage.setItem("gender", gender);
         }
         elements.forEach((element) => element.classList.remove(activeClass));
         event.target.classList.add(activeClass);
@@ -501,13 +534,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  getStaticInfo("#gender", "calculating__choose-item_active");
-  getStaticInfo(".calculating__choose_big", "calculating__choose-item_active");
+  getStaticInfo("#gender div", "calculating__choose-item_active");
+  getStaticInfo(
+    ".calculating__choose_big div",
+    "calculating__choose-item_active"
+  );
 
   function getDynamicInfo(inputSelector) {
     const input = document.querySelector(inputSelector);
 
     input.addEventListener("input", () => {
+      if (input.value.match(/[^\d\.]/g)) {
+        input.style.border = "3px solid red";
+      } else {
+        input.style.border = "none";
+      }
+
       switch (input.getAttribute("id")) {
         case "height":
           height = +input.value;
