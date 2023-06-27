@@ -1,3 +1,5 @@
+import { getResource } from "../services/services";
+
 function cards() {
   // Using classes for cards
   class FoodMenuCard {
@@ -51,16 +53,6 @@ function cards() {
     }
   }
 
-  const getResource = async (url) => {
-    const result = await fetch(url);
-
-    if (!result.ok) {
-      throw new Error(`Could not fetch ${url}, status: ${result.status}`);
-    }
-
-    return await result.json(); // Извлекаем из HTTP-ответа данные (которые в виде json формата) и возвращаем их в виде js-объекта
-  };
-
   getResource("http://localhost:3000/menu").then((foodCardsArr) => {
     foodCardsArr.forEach(
       ({
@@ -85,4 +77,4 @@ function cards() {
   });
 }
 
-module.exports = cards;
+export default cards;

@@ -1,6 +1,10 @@
-function forms() {
-  const tools = require("./tools");
+import tools from "./tools";
+import { openModalWindow, hideModalWindow } from "./modal";
+import { postData } from "../services/services";
 
+let hideModalWindowTimeoutID = null;
+
+function forms(formSelector, timerBeforeModal) {
   // Posting user data to server with Forms
   const messageForUser = {
     loadingImg: "img/form/spinner.svg",
@@ -8,21 +12,9 @@ function forms() {
     failure: "Что-то пошло не так.",
   };
 
-  const forms = document.querySelectorAll("form");
+  const forms = document.querySelectorAll(formSelector);
 
   forms.forEach((item) => bindPostData(item));
-
-  const postData = async (url, data) => {
-    const result = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: data,
-    });
-
-    return await result.json(); // Извлекаем из HTTP-ответа данные (которые в виде json формата) и возвращаем их в виде js-объекта
-  };
 
   function bindPostData(form) {
     form.addEventListener("submit", (event) => {
@@ -70,9 +62,12 @@ function forms() {
 
     document.querySelector(".modal").append(thankfulDialog);
 
-    openModalWindow();
+    openModalWindow(".modal", timerBeforeModal);
 
-    hideModalWindowTimeoutID = setTimeout(hideModalWindow, 5000);
+    hideModalWindowTimeoutID = setTimeout(
+      () => hideModalWindow(".modal"),
+      5000
+    );
   }
 
   fetch("http://localhost:3000/menu")
@@ -80,4 +75,5 @@ function forms() {
     .then((result) => console.log(result));
 }
 
-module.exports = forms;
+export default forms;
+export { hideModalWindowTimeoutID };

@@ -1,10 +1,15 @@
-function tabs() {
-  const tools = require("./tools");
+import tools from "./tools";
 
+function tabs(
+  tabsSelector,
+  tabsContentSelector,
+  tabsParentSelector,
+  activeClass
+) {
   // Tabs
-  const tabContentBlocks = document.querySelectorAll(".tabcontent");
-  const tabContainer = document.querySelector(".tabheader__items");
-  const tabs = document.querySelectorAll(".tabheader__item");
+  const tabs = document.querySelectorAll(tabsSelector);
+  const tabContentBlocks = document.querySelectorAll(tabsContentSelector);
+  const tabContainer = document.querySelector(tabsParentSelector);
 
   function hideAllTabContent() {
     tabContentBlocks.forEach((contentBlock) => {
@@ -12,19 +17,19 @@ function tabs() {
       tools.hideElementBlock(contentBlock);
     });
     tabs.forEach((tab) => {
-      tab.classList.remove("tabheader__item_active");
+      tab.classList.remove(activeClass);
     });
   }
 
   function showTabContentById(id = 0) {
     tools.showElementBlock(tabContentBlocks[id]);
     tabContentBlocks[id].classList.add("fade-animation");
-    tabs[id].classList.add("tabheader__item_active");
+    tabs[id].classList.add(activeClass);
   }
 
   tabContainer.addEventListener("click", (event) => {
     const clickedTab = event.target;
-    if (clickedTab && clickedTab.matches("div.tabheader__item")) {
+    if (clickedTab && clickedTab.matches(`div${tabsSelector}`)) {
       for (let [index, tab] of tabs.entries()) {
         if (tab === clickedTab) {
           hideAllTabContent();
@@ -39,4 +44,4 @@ function tabs() {
   showTabContentById();
 }
 
-module.exports = tabs;
+export default tabs;

@@ -1,4 +1,4 @@
-function timer() {
+function timer(timerId) {
   // Timer
   const targetFullDate = new Date(); // Today's date (this variable will be changed)
   targetFullDate.setDate(targetFullDate.getDate() + 5); // Today's date + 5 days
@@ -67,7 +67,7 @@ function timer() {
     }
   }
 
-  showTimerOnPage(".timer", targetFullDate);
+  showTimerOnPage(timerId, targetFullDate);
 }
 
-module.exports = timer;
+export default timer;

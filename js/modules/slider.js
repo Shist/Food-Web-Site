@@ -1,11 +1,20 @@
-function slider() {
+function slider({
+  container,
+  slide,
+  prevArrow,
+  nextArrow,
+  totalCounter,
+  currentCounter,
+  wrapper,
+  field,
+}) {
   // Slider with food images
-  const slides = document.querySelectorAll(".offer__slide");
-  const sliderWrapper = document.querySelector(".offer__slider");
-  const btnSliderPrev = document.querySelector(".offer__slider-prev");
-  const btnSliderNext = document.querySelector(".offer__slider-next");
-  const maxSlideNumLabel = document.querySelector("#total");
-  const currSlideNumLabel = document.querySelector("#current");
+  const sliderWrapper = document.querySelector(container);
+  const slides = document.querySelectorAll(slide);
+  const btnSliderPrev = document.querySelector(prevArrow);
+  const btnSliderNext = document.querySelector(nextArrow);
+  const maxSlideNumLabel = document.querySelector(totalCounter);
+  const currSlideNumLabel = document.querySelector(currentCounter);
   const wholeSlidesCount = slides.length;
   let currSlideNum = +currSlideNumLabel.textContent;
   let slideOffset = 0;
@@ -18,11 +27,11 @@ function slider() {
     currSlideNumLabel.textContent = currSlideNum;
   }
 
-  const slidesWrapper = document.querySelector(".offer__slider-wrapper");
+  const slidesWrapper = document.querySelector(wrapper);
   const slidesWrapperWidth = window.getComputedStyle(slidesWrapper).width;
   const sliderWidthNum = +slidesWrapperWidth.replace(/[^\d\.]/g, ""); // [^\d\.] - Any symbol except digits and "."
 
-  const slidesField = document.querySelector(".offer__slider-inner");
+  const slidesField = document.querySelector(field);
   slidesField.style.width = 100 * wholeSlidesCount + "%";
 
   slides.forEach((slide) => {
@@ -110,4 +119,4 @@ function slider() {
   });
 }
 
-module.exports = slider;
+export default slider;

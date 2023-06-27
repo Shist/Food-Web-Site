@@ -13,4 +13,4 @@ class Tools {
   }
 }
 
-module.exports = new Tools();
+export default new Tools();
