@@ -4,6 +4,11 @@
 
 ---
 
+### This project is hosted using the Vecel.com platform, you can see how it works here:
+## https://shist-food-web-site.vercel.app/
+
+---
+
 ## Video demo:
 
 https://github.com/Shist/Food-Web-Site/assets/40572268/242e1334-d67b-48b1-afdd-4c0a172db177
