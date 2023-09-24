@@ -7,6 +7,8 @@
 ### This project is hosted using the Vecel.com platform, you can see how it works here:
 ## https://shist-food-web-site.vercel.app/
 
+### Attention! Since this site is based on back-server, the POST methods (which are using inside modal windows with forms) are not working. So it is normal to face mistakes like "Failed to fetch" there.
+
 ---
 
 ## Video demo:
