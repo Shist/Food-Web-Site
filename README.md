@@ -7,13 +7,25 @@
 ### This project is hosted using the Vecel.com platform, you can see how it works here:
 ## https://shist-food-web-site.vercel.app/
 
-### Attention! Since this site is based on back-server, the POST methods (which are using inside modal windows with forms) are not working. So it is normal to face mistakes like "Failed to fetch" there.
-
 ---
 
 ## Video demo:
 
 https://github.com/Shist/Food-Web-Site/assets/40572268/242e1334-d67b-48b1-afdd-4c0a172db177
+
+---
+
+## Instruction for launching this project
+
+1. Go to the folder on your PC where you want to install the project:
+   `cd "your-folder"`
+1. Download and install files of this project:
+   `git clone https://github.com/Shist/Food-Web-Site`
+1. Go to the app folder:
+   `cd Food-Web-Site`
+1. Install all needed front side dependencies:
+   `npm install`
+1. Run the front app with some server (you can use [MAMP](https://www.mamp.info/en/windows/) for example). Attention: do not use LiveServer from VS Code for this as it can cause problems with POST / PUT / DELETE requests to the server.
 
 ---
 
