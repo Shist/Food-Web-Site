@@ -5,7 +5,10 @@
 ---
 
 ### This project is hosted using the Vecel.com platform, you can see how it works here:
+
 ## https://shist-food-web-site.vercel.app/
+
+### Attention! Since this site is based on back-server, some content is not loading as well as the POST methods (which are using inside modal windows with forms) are not working. So it is normal to face mistakes like "Failed to fetch" there. If you want to test all features you need to install the project and run the back server. You can use the instruction below.
 
 ---
 
@@ -25,7 +28,9 @@ https://github.com/Shist/Food-Web-Site/assets/40572268/242e1334-d67b-48b1-afdd-4
    `cd Food-Web-Site`
 1. Install all needed front side dependencies:
    `npm install`
-1. Run the front app with some server (you can use [MAMP](https://www.mamp.info/en/windows/) for example). Attention: do not use LiveServer from VS Code for this as it can cause problems with POST / PUT / DELETE requests to the server.
+1. Run back server:
+   `json-server db.json`
+1. In addition to the backend server mentioned above, you need to run the application itself on a separate server. Run the front app with some server (you can use [MAMP](https://www.mamp.info/en/windows/) for example). Attention: do not use LiveServer from VS Code for this as it can cause problems with POST / PUT / DELETE requests to the server.
 
 ---
 
